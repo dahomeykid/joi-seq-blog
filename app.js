@@ -1,5 +1,11 @@
 import express from "express";
 import postRoutes from "./routes/postRoutes.js";
+import categoryRoutes from "./routes/categoryRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
+import dotenv from "dotenv";
+
+dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 
@@ -10,6 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 
 //Routes
 app.use("/posts", postRoutes); // All routes in this file are prefixed with /posts
+app.use("/categories", categoryRoutes); // All routes in this file are prefixed with /categories
+app.use("/users", userRoutes); // All routes in this file are prefixed with /users
+app.use("/posts/:postId/comments", commentRoutes); // All routes in this file are prefixed with /posts/:postId/comments
+
 
 // Sample route for the root URL
 app.get("/", (req, res) => {

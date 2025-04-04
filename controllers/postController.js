@@ -1,5 +1,5 @@
 import asyncHandler from 'express-async-handler';
-import Post from '../models/Post.js';
+import { Post, Comment } from '../models/relations.js';
 import {postSchema} from '../validation/postValidation.js';
 
 // @desc    Create a new post
@@ -59,4 +59,32 @@ export const deletePost = asyncHandler(async (req, res) => {
   await post.destroy();
   res.json({ message: 'Post deleted' });
 });
+
+// @desc Get all comments for a post
+export const getPostComments = asyncHandler(async (req, res) => {
+  const postId = req.params.id;
+  const comments = await Comment.findAll({
+    where: { postId },
+  });
+  res.json(comments);
+});
+
+// @desc Add a comment to a post
+export const addCommentToPost = asyncHandler(async (req, res) => {
+  const postId = req.params.id;
+  const { error } = commentSchema.validate(req.body);
+  if (error) {
+    res.status(400);
+    throw new Error(error.details[0].message);
+  }
+
+  const comment = await Comment.create({
+    ...req.body,
+    postId,
+  });
+  res.status(201).json(comment);
+});
+
+
+
 
